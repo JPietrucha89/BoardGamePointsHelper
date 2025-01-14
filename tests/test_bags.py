@@ -4,6 +4,8 @@ import os
 # Add the parent directory to the sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
+import streamlit_app
+
 # from modules.tokens import create_starting_bags_of_tokens
 # from modules.tokens import randomly_remove_one_token_from_bag
 # import Main
