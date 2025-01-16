@@ -13,5 +13,15 @@ import streamlit_app
 def test_basic():
     assert 1 > 0
 
+def test_find_highest_score_and_player():
+    test_dict = {
+        "a" : 10,
+        "b": 0,
+        "c" : 300   
+    }
+    returned_key, returned_value = streamlit_app.find_highest_score_and_player(test_dict)
+    assert returned_key == 'c'
+    assert returned_value == test_dict['c']
+    
 if __name__ == '__main__':
     test_basic()
