@@ -1,0 +1,25 @@
+{
+  "Tyrants of the Underdark": [
+    "VP value of each site you control.",
+    "2 VP for each site under your total control.",
+    "1 VP for each troop in your trophy hall.",
+    "Deck VP value of each card in yur deck, hand, and discard pile.",
+    "Inner circle VP value of each card in your inner circle.",
+    "VP Tokens."
+  ],
+  "Harmonies": [
+    "Fields",
+    "Forests",
+    "Mountains",
+    "Rivers",
+    "Cities",
+    "Animal_1",
+    "Animal_2",
+    "Animal_3",
+    "Animal_4",
+    "Animal_5",
+    "Animal_6",
+    "Animal_7",
+    "Animal_8"
+  ]
+}
