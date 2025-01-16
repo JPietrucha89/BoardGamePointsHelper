@@ -62,8 +62,8 @@ def page_config():
 
 def find_highest_score_and_player(results_dict: dict):
     # find key with Maximum value in Dictionary
-    highest_score = max(zip(results_dict.values(), results_dict.keys()))[0]
     player_with_highest_score = max(zip(results_dict.values(), results_dict.keys()))[1]
+    highest_score = max(zip(results_dict.values(), results_dict.keys()))[0]
     return player_with_highest_score, highest_score
 
 if __name__ == '__main__':
@@ -72,7 +72,6 @@ if __name__ == '__main__':
 # DONE GATHER INFO ABOUT NUMBER OF PLAYERS AND THEIR NAMES
     if 'names_submitted' not in st.session_state:
         st.session_state.players_names_list = gather_info_about_players()
-        # st.write(players_names_list)
 
 # DONE PICK A GAME FROM LIST
     if len(st.session_state.players_names_list) > 0 and 'game_dict' not in st.session_state: # and 'chosen_game' not in st.session_state:
@@ -109,7 +108,7 @@ if __name__ == '__main__':
 # DONE PRINT SUM RESULTS
         results_dict = {}
 
-# DONE CREATE DICT WITH SCORES AND FIND HIGHEST SCORE
+    # DONE CREATE DICT WITH SCORES AND FIND HIGHEST SCORE
         for i in range(len(st.session_state.players_names_list)):
             player_name = st.session_state.players_names_list[i]
             current_player_score = edited_df[st.session_state.players_names_list[i]].sum()
@@ -117,7 +116,7 @@ if __name__ == '__main__':
         
         player_with_highest_score, highest_score = find_highest_score_and_player(results_dict)
 
-# DONE PRINT CONTENTS OF DICT WITH COLORS AND ICONS
+    # DONE PRINT CONTENTS OF DICT WITH COLORS AND ICONS
         color = 'green'
         icon = ':fire:'
         container = st.container(border = True)
