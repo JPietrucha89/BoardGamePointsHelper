@@ -55,8 +55,8 @@ def page_config():
     path_to_icon = "dice_icon.png"
     st.set_page_config(
         page_title="BoardGamePointsHelper",
-        page_icon = path_to_icon
-        # layout="wide"
+        page_icon = path_to_icon,
+        layout="wide"
     )
     st.logo(path_to_icon, size="large", icon_image=path_to_icon)
 
@@ -121,17 +121,20 @@ if __name__ == '__main__':
         icon = ':fire:'
         container = st.container(border = True)
         with container:
+            st.markdown("<h1 style='text-align: center; color: grey;'>PLAYERS</h1>", unsafe_allow_html=True)
             st.session_state.columns_list_names = st.columns(len(st.session_state.players_names_list), border = True)
             for i in range(len(st.session_state.columns_list_names)):
                 with st.session_state.columns_list_names[i]:
                     current_player_name = st.session_state.players_names_list[i]
                     current_player_score = edited_df[st.session_state.players_names_list[i]].sum()
                     results_dict[player_name] = current_player_score
-                    st.subheader(f"Player: :orange[{current_player_name}]")
-                    if current_player_name == player_with_highest_score and current_player_score == highest_score:
-                        st.subheader(f"{icon} :{color}[{current_player_score}]{icon}")
+
+                    st.markdown(f"<h1 style='text-align: center; color: orange;'>{current_player_name}</h1>", unsafe_allow_html=True)
+
+                    if current_player_score == highest_score: #and current_player_name == player_with_highest_score:
+                        st.markdown(f'''<h1 style='text-align: center; color: green;'>{current_player_score}</h1>''', unsafe_allow_html=True)
                     else: 
-                        st.subheader(current_player_score)
+                        st.markdown(f"<h1 style='text-align: center;'>{current_player_score}</h1>", unsafe_allow_html=True)
 
     quit()
     st.session_state
