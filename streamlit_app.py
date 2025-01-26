@@ -7,7 +7,7 @@ games_dict = {}
 games_list = []
 game_columns_list = []
 
-def gather_info_about_players(number_of_players = None):
+def gather_info_about_players(number_of_players = None) -> list:
 
     placeholder = st.empty()
 
@@ -35,7 +35,7 @@ def gather_info_about_players(number_of_players = None):
 
     return players_names_list
 
-def import_json_and_convert_it_to_dict(path_to_json: str):
+def import_json_and_convert_it_to_dict(path_to_json: str) -> dict:
     with open(path_to_json, 'r') as file:
         data = file.read()
 
@@ -51,7 +51,7 @@ def import_json_and_convert_it_to_dict(path_to_json: str):
 
     return games_dict
 
-def page_config():
+def page_config() -> None:
     path_to_icon = "dice_icon.png"
     st.set_page_config(
         page_title="BoardGamePointsHelper",
@@ -65,6 +65,46 @@ def find_highest_score_and_player(results_dict: dict):
     player_with_highest_score = max(zip(results_dict.values(), results_dict.keys()))[1]
     highest_score = max(zip(results_dict.values(), results_dict.keys()))[0]
     return player_with_highest_score, highest_score
+
+def create_editable_df_for_scoring(chosen_game: str, players_names_list: list) -> pd.DataFrame:
+    
+    list_of_zeros = [0 for element in range( len(st.session_state.games_dict[st.session_state.chosen_game]) )]
+
+    dict = {
+        "Points category" : st.session_state.games_dict[st.session_state.chosen_game]
+        }
+
+    for player in st.session_state.players_names_list:
+        dict[player] = list_of_zeros
+
+    df = pd.DataFrame(dict)
+    return df
+
+def prepare_results_dict() -> dict:
+    results_dict = {}
+    for i in range(len(st.session_state.players_names_list)):
+        player_name = st.session_state.players_names_list[i]
+        current_player_score = edited_df[st.session_state.players_names_list[i]].sum()
+        results_dict[player_name] = current_player_score
+    return results_dict
+
+def print_contents_of_dict_with_scores(highest_score: int) -> None:
+    st.markdown("<h1 style='text-align: center; color: grey;'>PLAYERS</h1>", unsafe_allow_html=True)
+    st.session_state.columns_list_names = st.columns(len(st.session_state.players_names_list), border = True)
+
+    for i in range(len(st.session_state.columns_list_names)):
+        with st.session_state.columns_list_names[i]:
+            current_player_name = st.session_state.players_names_list[i]
+            current_player_score = edited_df[st.session_state.players_names_list[i]].sum()
+            results_dict[current_player_name] = current_player_score
+
+            st.markdown(f"<h1 style='text-align: center; color: orange;'>{current_player_name}</h1>", unsafe_allow_html=True)
+
+            if current_player_score == highest_score: #and current_player_name == player_with_highest_score:
+                st.markdown(f'''<h1 style='text-align: center; color: green;'>{current_player_score}</h1>''', unsafe_allow_html=True)
+            else: 
+                st.markdown(f"<h1 style='text-align: center;'>{current_player_score}</h1>", unsafe_allow_html=True)
+    pass
 
 if __name__ == '__main__':
     page_config()
@@ -88,53 +128,22 @@ if __name__ == '__main__':
             placeholder = "Select one game..."
         )
 
-# DONE for this game and given number_of_players import game_columns_list and show this dataframe directly or do a transpose first
+# DONE for this game and given number_of_players import game_columns_list and show this dataframe
     if len(st.session_state.players_names_list) > 0 and 'chosen_game' in st.session_state and st.session_state.chosen_game is not None:
         st.header("SCORING SHEET", divider = 'green')
 
-        list_of_zeros = [0 for element in range( len(st.session_state.games_dict[st.session_state.chosen_game]) )]
-
-        dict = {
-            "Points category" : st.session_state.games_dict[st.session_state.chosen_game]
-            }
-
-        for player in st.session_state.players_names_list:
-            dict[player] = list_of_zeros
-
-
-        df = pd.DataFrame(dict)
+        df = create_editable_df_for_scoring(chosen_game, players_names_list)
         edited_df = st.data_editor(df, hide_index = True, num_rows="dynamic", use_container_width=True)
 
 # DONE PRINT SUM RESULTS
-        results_dict = {}
-
     # DONE CREATE DICT WITH SCORES AND FIND HIGHEST SCORE
-        for i in range(len(st.session_state.players_names_list)):
-            player_name = st.session_state.players_names_list[i]
-            current_player_score = edited_df[st.session_state.players_names_list[i]].sum()
-            results_dict[player_name] = current_player_score
-        
+        results_dict = prepare_results_dict()
         player_with_highest_score, highest_score = find_highest_score_and_player(results_dict)
 
     # DONE PRINT CONTENTS OF DICT WITH COLORS AND ICONS
-        color = 'green'
-        icon = ':fire:'
         container = st.container(border = True)
         with container:
-            st.markdown("<h1 style='text-align: center; color: grey;'>PLAYERS</h1>", unsafe_allow_html=True)
-            st.session_state.columns_list_names = st.columns(len(st.session_state.players_names_list), border = True)
-            for i in range(len(st.session_state.columns_list_names)):
-                with st.session_state.columns_list_names[i]:
-                    current_player_name = st.session_state.players_names_list[i]
-                    current_player_score = edited_df[st.session_state.players_names_list[i]].sum()
-                    results_dict[player_name] = current_player_score
-
-                    st.markdown(f"<h1 style='text-align: center; color: orange;'>{current_player_name}</h1>", unsafe_allow_html=True)
-
-                    if current_player_score == highest_score: #and current_player_name == player_with_highest_score:
-                        st.markdown(f'''<h1 style='text-align: center; color: green;'>{current_player_score}</h1>''', unsafe_allow_html=True)
-                    else: 
-                        st.markdown(f"<h1 style='text-align: center;'>{current_player_score}</h1>", unsafe_allow_html=True)
+            print_contents_of_dict_with_scores(highest_score)
 
     quit()
     st.session_state
