@@ -7,7 +7,7 @@ games_dict = {}
 games_list = []
 game_columns_list = []
 
-def gather_info_about_players(number_of_players = None):
+def gather_info_about_players(number_of_players = None) -> list:
 
     placeholder = st.empty()
 
@@ -66,6 +66,20 @@ def find_highest_score_and_player(results_dict: dict):
     highest_score = max(zip(results_dict.values(), results_dict.keys()))[0]
     return player_with_highest_score, highest_score
 
+def create_editable_df_for_scoring(chosen_game: str, players_names_list: list) -> pd.DataFrame:
+    
+    list_of_zeros = [0 for element in range( len(st.session_state.games_dict[st.session_state.chosen_game]) )]
+
+    dict = {
+        "Points category" : st.session_state.games_dict[st.session_state.chosen_game]
+        }
+
+    for player in st.session_state.players_names_list:
+        dict[player] = list_of_zeros
+
+    df = pd.DataFrame(dict)
+    return df
+
 if __name__ == '__main__':
     page_config()
 
@@ -92,17 +106,7 @@ if __name__ == '__main__':
     if len(st.session_state.players_names_list) > 0 and 'chosen_game' in st.session_state and st.session_state.chosen_game is not None:
         st.header("SCORING SHEET", divider = 'green')
 
-        list_of_zeros = [0 for element in range( len(st.session_state.games_dict[st.session_state.chosen_game]) )]
-
-        dict = {
-            "Points category" : st.session_state.games_dict[st.session_state.chosen_game]
-            }
-
-        for player in st.session_state.players_names_list:
-            dict[player] = list_of_zeros
-
-
-        df = pd.DataFrame(dict)
+        df = create_editable_df_for_scoring(chosen_game, players_names_list)
         edited_df = st.data_editor(df, hide_index = True, num_rows="dynamic", use_container_width=True)
 
 # DONE PRINT SUM RESULTS
