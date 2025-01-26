@@ -80,6 +80,32 @@ def create_editable_df_for_scoring(chosen_game: str, players_names_list: list) -
     df = pd.DataFrame(dict)
     return df
 
+def prepare_results_dict() -> dict:
+    results_dict = {}
+    for i in range(len(st.session_state.players_names_list)):
+        player_name = st.session_state.players_names_list[i]
+        current_player_score = edited_df[st.session_state.players_names_list[i]].sum()
+        results_dict[player_name] = current_player_score
+    return results_dict
+
+def print_contents_of_dict_with_scores(highest_score: int) -> None:
+    st.markdown("<h1 style='text-align: center; color: grey;'>PLAYERS</h1>", unsafe_allow_html=True)
+    st.session_state.columns_list_names = st.columns(len(st.session_state.players_names_list), border = True)
+
+    for i in range(len(st.session_state.columns_list_names)):
+        with st.session_state.columns_list_names[i]:
+            current_player_name = st.session_state.players_names_list[i]
+            current_player_score = edited_df[st.session_state.players_names_list[i]].sum()
+            results_dict[current_player_name] = current_player_score
+
+            st.markdown(f"<h1 style='text-align: center; color: orange;'>{current_player_name}</h1>", unsafe_allow_html=True)
+
+            if current_player_score == highest_score: #and current_player_name == player_with_highest_score:
+                st.markdown(f'''<h1 style='text-align: center; color: green;'>{current_player_score}</h1>''', unsafe_allow_html=True)
+            else: 
+                st.markdown(f"<h1 style='text-align: center;'>{current_player_score}</h1>", unsafe_allow_html=True)
+    pass
+
 if __name__ == '__main__':
     page_config()
 
@@ -110,35 +136,15 @@ if __name__ == '__main__':
         edited_df = st.data_editor(df, hide_index = True, num_rows="dynamic", use_container_width=True)
 
 # DONE PRINT SUM RESULTS
-        results_dict = {}
 
     # DONE CREATE DICT WITH SCORES AND FIND HIGHEST SCORE
-        for i in range(len(st.session_state.players_names_list)):
-            player_name = st.session_state.players_names_list[i]
-            current_player_score = edited_df[st.session_state.players_names_list[i]].sum()
-            results_dict[player_name] = current_player_score
-        
+        results_dict = prepare_results_dict()
         player_with_highest_score, highest_score = find_highest_score_and_player(results_dict)
 
     # DONE PRINT CONTENTS OF DICT WITH COLORS AND ICONS
-        color = 'green'
-        icon = ':fire:'
         container = st.container(border = True)
         with container:
-            st.markdown("<h1 style='text-align: center; color: grey;'>PLAYERS</h1>", unsafe_allow_html=True)
-            st.session_state.columns_list_names = st.columns(len(st.session_state.players_names_list), border = True)
-            for i in range(len(st.session_state.columns_list_names)):
-                with st.session_state.columns_list_names[i]:
-                    current_player_name = st.session_state.players_names_list[i]
-                    current_player_score = edited_df[st.session_state.players_names_list[i]].sum()
-                    results_dict[player_name] = current_player_score
-
-                    st.markdown(f"<h1 style='text-align: center; color: orange;'>{current_player_name}</h1>", unsafe_allow_html=True)
-
-                    if current_player_score == highest_score: #and current_player_name == player_with_highest_score:
-                        st.markdown(f'''<h1 style='text-align: center; color: green;'>{current_player_score}</h1>''', unsafe_allow_html=True)
-                    else: 
-                        st.markdown(f"<h1 style='text-align: center;'>{current_player_score}</h1>", unsafe_allow_html=True)
+            print_contents_of_dict_with_scores(highest_score)
 
     quit()
     st.session_state
