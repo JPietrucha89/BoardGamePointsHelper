@@ -35,7 +35,7 @@ def gather_info_about_players(number_of_players = None) -> list:
 
     return players_names_list
 
-def import_json_and_convert_it_to_dict(path_to_json: str):
+def import_json_and_convert_it_to_dict(path_to_json: str) -> dict:
     with open(path_to_json, 'r') as file:
         data = file.read()
 
@@ -51,7 +51,7 @@ def import_json_and_convert_it_to_dict(path_to_json: str):
 
     return games_dict
 
-def page_config():
+def page_config() -> None:
     path_to_icon = "dice_icon.png"
     st.set_page_config(
         page_title="BoardGamePointsHelper",
@@ -128,7 +128,7 @@ if __name__ == '__main__':
             placeholder = "Select one game..."
         )
 
-# DONE for this game and given number_of_players import game_columns_list and show this dataframe directly or do a transpose first
+# DONE for this game and given number_of_players import game_columns_list and show this dataframe
     if len(st.session_state.players_names_list) > 0 and 'chosen_game' in st.session_state and st.session_state.chosen_game is not None:
         st.header("SCORING SHEET", divider = 'green')
 
@@ -136,7 +136,6 @@ if __name__ == '__main__':
         edited_df = st.data_editor(df, hide_index = True, num_rows="dynamic", use_container_width=True)
 
 # DONE PRINT SUM RESULTS
-
     # DONE CREATE DICT WITH SCORES AND FIND HIGHEST SCORE
         results_dict = prepare_results_dict()
         player_with_highest_score, highest_score = find_highest_score_and_player(results_dict)
